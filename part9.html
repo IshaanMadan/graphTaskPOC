@@ -1,0 +1,115 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+    <title>Phaser - Making your first game, part 9</title>
+    <script src="//cdn.jsdelivr.net/phaser/2.6.2/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
+
+function preload() {
+
+    game.load.image('sky', 'assets/sky.png');
+    game.load.image('ground', 'assets/platform.png');
+    game.load.image('ground', 'assets/platform.png');
+    game.load.spritesheet('star', 'assets/star.png');
+
+
+}
+var handle1, leftHandleStartXCoordinate;
+var barWidth;
+var handle2, rightHandleStartXCoordinate;
+var bar; 
+var line1;
+
+function create() {
+
+    game.stage.backgroundColor = '#124184';
+    bar = game.add.image(100, 200, 'ground');
+    bar.inputEnabled = true;
+    bar.input.allowVerticalDrag = false;
+    bar.input.enableDrag(true);
+    bar.events.onDragUpdate.add(barDragUpdate);   
+
+    handle1 = game.add.sprite(bar.x, bar.y + bar.height/2, 'star');
+    handle1.anchor.set(0.5);
+    handle1.inputEnabled = true;
+    handle1.input.allowVerticalDrag = false;
+    handle1.input.enableDrag(true);
+    handle1.events.onDragStart.add(leftHandleDragStart);
+    handle1.events.onDragUpdate.add(leftHandleDragUpdate);
+    handle1.events.onDragStop.add(leftHandleDragStop);
+
+    handle2 = game.add.sprite(bar.x + bar.width, bar.y + bar.height/2, 'star');
+    handle2.anchor.set(0.5);
+    handle2.inputEnabled = true;
+    handle2.input.allowVerticalDrag = false;
+    handle2.input.enableDrag(true);
+    handle2.events.onDragStart.add(rightHandleDragStart);
+    handle2.events.onDragUpdate.add(rightHandleDragUpdate);
+    handle2.events.onDragStop.add(rightHandleDragStop);
+    barWidth = bar.width
+
+}
+
+function update() {
+ //bar.fromSprite(handle1, handle2, false);
+}
+
+function render() {
+
+}
+
+function leftHandleDragStart(sprite, pointer, x, y) {
+    leftHandleStartXCoordinate = x;
+}
+function leftHandleDragStop(sprite, pointer, x, y) {
+    barWidth = bar.width;
+}
+
+function leftHandleDragUpdate(sprite, pointer, x, y, snapOnDrag, fromStart) {
+    dragDistance = leftHandleStartXCoordinate - x;
+    if(!isNaN(dragDistance)){
+        bar.width = (barWidth + dragDistance);
+       // bar.resizeFrame(game, bar.width +dragDistance,10);
+    }
+    bar.x = x
+
+}
+
+function rightHandleDragStart(sprite, pointer, x, y) {
+    rightHandleStartXCoordinate = x;
+}
+function rightHandleDragStop(sprite, pointer, x, y) {
+    barWidth = bar.width;
+}
+
+function rightHandleDragUpdate(sprite, pointer, x, y, snapOnDrag, fromStart) {
+    dragDistance = x- rightHandleStartXCoordinate;
+    if(!isNaN(dragDistance)){
+        bar.width = (barWidth + dragDistance);
+       // bar.resizeFrame(game, bar.width +dragDistance,10);
+    }
+
+}
+
+function barDragUpdate(sprite, pointer, x, y, snapOnDrag, fromStart) {
+    handle1.x = bar.x
+    handle1.y = bar.y + bar.height/2
+    handle2.x = bar.x + bar.width
+    handle2.y = bar.y + bar.height/2
+
+}
+</script>
+
+</body>
+</html>
